@@ -1,130 +1,233 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<style>
-  .grid-container{
-  display: flex;
-  grid-template-columns: auto auto;
-  padding: 20px;
-  align-items: center;
-  justify-content: center;
-  grid-gap: 100px;
-  }
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <style>
+      .grid-container {
+        display: flex;
+        grid-template-columns: auto auto;
+        padding: 20px;
+        align-items: center;
+        justify-content: center;
+        grid-gap: 100px;
+      }
 
-.flexcont{
-    width: 180px;
-    display: flex;
-    flex-direction: column;
-  justify-content: center;
-
-}
-.flexcont button {
-    margin: 10px;
-    height: 50px;
-
-}
-.fields{
-padding-top :50px;
-width: 400px;
-line-height: 50px;
-margin: 50px;
-
-}
-.txt{
-    padding: 4px;
-    margin: 5px;
-    width:100%
-}
-
-</style>
-</head>
-<body>
+      .flexcont {
+        width: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .flexcont button {
+        margin: 10px;
+        height: 50px;
+      }
+      .fields {
+        padding-top: 50px;
+        width: 400px;
+        line-height: 50px;
+        margin: 50px;
+      }
+      .txt {
+        padding: 4px;
+        margin: 5px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body onload="fillform()">
     <div class="grid-container">
-        <div id="inp">
-       <form class="fields" onsubmit="return validation()" style="margin-top: 2.5em;" > 
-        <div class="txt" > <input  class="form-control" id="Username" type="text" placeholder="User Name"></div> 
-        <div id="name_err" style="color: red;"></div>
+      <div id="inp">
+        <form
+          class="fields"
+          onsubmit="return validation()"
+          style="margin-top: 2.5em"
+        >
+          <div class="txt">
+            <input
+              class="form-control"
+              id="Username"
+              type="text"
+              placeholder="User Name"
+            />
+          </div>
+          <div id="name_err" style="color: red"></div>
 
-        <div class="txt">  <input class="form-control" id="email" type="text" placeholder="Email"></div>
-        <div id="email_err"style="color: red;" ></div>
+          <div class="txt">
+            <input
+              class="form-control"
+              id="email"
+              type="text"
+              placeholder="Email"
+            />
+          </div>
+          <div id="email_err" style="color: red"></div>
 
-        <div class="txt"><input class="form-control" id="DOB" type="text" placeholder="Date of birth"></div>  
-        <div id="DOB_err" style="color: red;"></div>
+          <div class="txt">
+            <input
+              class="form-control"
+              id="DOB"
+              type="text"
+              placeholder="Date of birth"
+            />
+          </div>
+          <div id="DOB_err" style="color: red"></div>
 
-        <div class="txt"><input class="form-control" id="phone" type="text" placeholder="Phone Number"></div>
-        <div id="phone_err" style="color: red;"></div>
+          <div class="txt">
+            <input
+              class="form-control"
+              id="phone"
+              type="text"
+              placeholder="Phone Number"
+            />
+          </div>
+          <div id="phone_err" style="color: red"></div>
 
-        <div class="txt"><input class="form-control" id="pass" type="password" placeholder="Password"></div>
-        <div id="pass_err"style="color: red;" ></div>
+          <div class="txt">
+            <input
+              class="form-control"
+              id="pass"
+              type="password"
+              placeholder="Password"
+            />
+          </div>
+          <div id="pass_err" style="color: red"></div>
 
-        <div class="txt" > <button class="btn btn-primary"   id="bt1" value="submit">Submit</button></div>
-    </form>
-</div>
-<div id="btns" > 
-     <h3>DO you accept to store your data?? </h3>
+          <div class="txt">
+            <button class="btn btn-primary" id="bt1" value="submit">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+      <div id="btns">
+        <h3>DO you accept to store your data??</h3>
 
-  <div class="flexcont">
- <button>Save to local storage</button>
- <button>Save to session storage</button>
- <button>Clear all </button>
-</div>
-</div>
+        <div class="flexcont">
+          <button onclick="localsessionstore('local')">
+            Save to local storage
+          </button>
+          <button onclick="localsessionstore('session')">
+            Save to session storage
+          </button>
+          <button onclick="clearall()">Clear all</button>
+        </div>
+      </div>
+    </div>
 
-</div>
+    <script>
+      let formoobj = {
+        name: null,
+        email: null,
+        DOB: null,
+        phone: null,
+        pass: null,
+      };
+      function fillform() {
+        let storeref = null;
+        if (localStorage.getItem("formoobj") != null) {
+          storeref = localStorage;
+        } else if (sessionStorage.getItem("formoobj") != null) {
+          storeref = sessionStorage;
+        }
+        if (storeref != null) {
+          formoobj = JSON.parse(storeref.formoobj);
+          document.getElementById("Username").value = formoobj.name;
+          document.getElementById("email").value = formoobj.exmail;
+          document.getElementById("phone").value = formoobj.phone;
+          document.getElementById("pass").value = formoobj.pass;
+          document.getElementById("DOB").value = formoobj.DOB;
+        }
+      }
+      function localsessionstore(storetype) {
+        formoobj.name = document.getElementById("Username").value;
+        formoobj.email = document.getElementById("email").value;
+        formoobj.phone = document.getElementById("phone").value;
+        formoobj.pass = document.getElementById("pass").value;
+        formoobj.DOB = document.getElementById("DOB").value;
+        if (storetype == "local") {
+          localStorage.setItem("formoobj", JSON.stringify(formoobj));
+          if (sessionStorage.getItem("formoobj") != null) {
+            sessionStorage.removeItem("formoobj");
+          }
+        } else {
+          sessionStorage.setItem("formoobj", JSON.stringify(formoobj));
+          if (localStorage.getItem("formoobj") != null) {
+            localStorage.removeItem("formoobj");
+          }
+        }
+      }
 
-<script>
- function validation(){
-            var name=document.getElementById("Username").value;
-            var email=document.getElementById("email").value;
-            var DOB=document.getElementById("DOB").value;
-            var phone=document.getElementById("phone").value;
-            var pass=document.getElementById("pass").value;
-            var Regexname=/^[A-Za-z]{3,20}/
-            var Regexemail=/^[A-Za-z]{2,20}@[A-Za-z]{2,10}.[A-Za-z]{2,3}/
-            var RegexDOB=/^[0-9]{2}[\/]{1}[0-9]{2}[\/]{1}[0-9]{4}$/g
-            var Regexphone=/^([962])([7-9]{1})([0-9]{7})/
-            var Regexpass=/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8})$/
+      function clearall() {
+        if (localStorage.getItem("formoobj") != null) {
+            localStorage.removeItem("formoobj");
+          }
+          if (sessionStorage.getItem("formoobj") != null) {
+            sessionStorage.removeItem("formoobj");
+          }
+          document.getElementById("Username").value = "";
+          document.getElementById("email").value = "";
+          document.getElementById("phone").value = "";
+          document.getElementById("pass").value = "";
+          document.getElementById("DOB").value = "";
+      }
 
-            if(Regexname.test(name)){
-                document.getElementById("name_err").innerHTML="";
-            
-            }else{
-                document.getElementById("name_err").innerHTML="Please Enter a valid  name";
-                return false;
-            }
-            if(Regexemail.test(email)){
-                document.getElementById("email_err").innerHTML="";
-            }
-            else{
-                document.getElementById("email_err").innerHTML="Please Enter a valid email";
-                return false;
-            }
-            
-            if(Regexpass.test(pass)){
-                document.getElementById("pass_err").innerHTML="";
-            }
-            else{
-                document.getElementById("pass_err").innerHTML="Please Enter a valid password";
-                return false;
-            }
-            if(Regexphone.test(phone)){
-                document.getElementById("phone_err").innerHTML="";
-            }
-            else{
-                document.getElementById("phone_err").innerHTML="Please Enter a valid phone no.";
-                return false;
-            } if(Regexphone.test(DOB)){
-                document.getElementById("DOB").innerHTML="";
-            }
-            else{
-                document.getElementById("DOB_err").innerHTML="Please Enter BOD";
-                return false;
-            }
+      function validation() {
+        var name = document.getElementById("Username").value;
+        var email = document.getElementById("email").value;
+        var DOB = document.getElementById("DOB").value;
+        var phone = document.getElementById("phone").value;
+        var pass = document.getElementById("pass").value;
+        var Regexname = /^[A-Za-z]{3,20}/;
+        var Regexemail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        var RegexDOB = /^(0[1-9]|1[012])[-/.](0[1-9]|[12][0-9]|3[01])[-/.](19|20)\\d\\d$/;
+        var Regexphone = /^\962?([7-9]{2})\)?([0-9]{7})$/;
+        var Regexpass = /^(?=.*\d)(?=(.*\W){1})(?=.*[a-zA-Z])(?!.*\s).{1,15}$/;
 
+        if (Regexname.test(name)) {
+          document.getElementById("name_err").innerHTML = "";
+        } else {
+          document.getElementById("name_err").innerHTML =
+            "Please Enter a valid  name";
+          return false;
+        }
+        if (Regexemail.test(email)) {
+          document.getElementById("email_err").innerHTML = "";
+        } else {
+          document.getElementById("email_err").innerHTML =
+            "Please Enter a valid email";
+          return false;
         }
 
-</script>
-</body>
+        if (Regexpass.test(pass)) {
+          document.getElementById("pass_err").innerHTML = "";
+        } else {
+          document.getElementById("pass_err").innerHTML =
+            "Please Enter a valid password";
+          return false;
+        }
+        if (Regexphone.test(phone)) {
+          document.getElementById("phone_err").innerHTML = "";
+        } else {
+          document.getElementById("phone_err").innerHTML =
+            "Please Enter a valid phone no.";
+          return false;
+        }
+        if (Regexphone.test(DOB)) {
+          document.getElementById("DOB").innerHTML = "";
+        } else {
+          document.getElementById("DOB_err").innerHTML = "Please Enter DOB";
+          return false;
+        }
+
+        localStorage.setItem("name", name);
+        localStorage.setItem("pw", email);
+        alert("Your account has been created");
+      }
+    </script>
+  </body>
 </html>
